@@ -30,16 +30,17 @@ class TornadoWorker(Worker):
         web.RequestHandler.clear = clear
         sys.modules["tornado.web"] = web
 
-    def handle_quit(self, sig, frame):
-        super(TornadoWorker, self).handle_quit(sig, frame)
-        self.ioloop.stop()
+    def handle_exit(self, sig, frame):
+        if self.alive:
+            super(TornadoWorker, self).handle_exit(sig, frame)
+            self.stop()
 
     def handle_request(self):
         self.nr += 1
         if self.alive and self.nr >= self.max_requests:
             self.alive = False
             self.log.info("Autorestarting worker after current request.")
-            self.ioloop.stop()
+            self.stop()
 
     def watchdog(self):
         if self.alive:
@@ -47,7 +48,7 @@ class TornadoWorker(Worker):
 
         if self.ppid != os.getppid():
             self.log.info("Parent changed, shutting down: %s", self)
-            self.ioloop.stop()
+            self.stop()
 
     def run(self):
         self.ioloop = IOLoop.instance()
@@ -67,20 +68,33 @@ class TornadoWorker(Worker):
         # will help gunicorn shutdown the worker if max_requests
         # is exceeded.
         httpserver = sys.modules["tornado.httpserver"]
-        old_connection_finish = httpserver.HTTPConnection.finish
+        if hasattr(httpserver, 'HTTPConnection'):
+            old_connection_finish = httpserver.HTTPConnection.finish
 
-        def finish(other):
-            self.handle_request()
-            old_connection_finish(other)
-        httpserver.HTTPConnection.finish = finish
-        sys.modules["tornado.httpserver"] = httpserver
+            def finish(other):
+                self.handle_request()
+                old_connection_finish(other)
+            httpserver.HTTPConnection.finish = finish
+            sys.modules["tornado.httpserver"] = httpserver
+
+            server_class = tornado.httpserver.HTTPServer
+        else:
+
+            class _HTTPServer(tornado.httpserver.HTTPServer):
+
+                def on_close(instance, server_conn):
+                    self.handle_request()
+                    super(_HTTPServer, instance).on_close(server_conn)
+
+            server_class = _HTTPServer
 
         if self.cfg.is_ssl:
-            server = tornado.httpserver.HTTPServer(app, io_loop=self.ioloop,
+            server = server_class(app, io_loop=self.ioloop,
                     ssl_options=self.cfg.ssl_options)
         else:
-            server = tornado.httpserver.HTTPServer(app,
-                    io_loop=self.ioloop)
+            server = server_class(app, io_loop=self.ioloop)
+
+        self.server = server
 
         for s in self.sockets:
             s.setblocking(0)
@@ -90,7 +104,18 @@ class TornadoWorker(Worker):
                 server._sockets[s.fileno()] = s
 
         server.no_keep_alive = self.cfg.keepalive <= 0
-        server.xheaders = bool(self.cfg.x_forwarded_for_header)
         server.start(num_processes=1)
 
         self.ioloop.start()
+
+    def stop(self):
+        if hasattr(self, 'server'):
+            try:
+                self.server.stop()
+            except Exception:
+                pass
+        PeriodicCallback(self.stop_ioloop, 1000, io_loop=self.ioloop).start()
+
+    def stop_ioloop(self):
+        if not self.ioloop._callbacks and len(self.ioloop._timeouts) <= 1:
+            self.ioloop.stop()
