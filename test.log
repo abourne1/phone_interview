@@ -1,0 +1,21 @@
+[2015-09-16 13:45:48 -0700] [8469] [INFO] Starting gunicorn 19.3.0
+[2015-09-16 13:45:48 -0700] [8469] [INFO] Listening at: http://127.0.0.1:8000 (8469)
+[2015-09-16 13:45:48 -0700] [8469] [INFO] Using worker: sync
+[2015-09-16 13:45:48 -0700] [8472] [INFO] Booting worker with pid: 8472
+[2015-09-16 13:46:49 -0700] [8469] [INFO] Handling signal: int
+[2015-09-16 13:46:49 -0700] [8472] [INFO] Worker exiting (pid: 8472)
+[2015-09-16 13:46:49 -0700] [8469] [INFO] Shutting down: Master
+[2015-09-16 13:47:59 -0700] [8500] [INFO] Starting gunicorn 19.3.0
+[2015-09-16 13:47:59 -0700] [8500] [INFO] Listening at: http://127.0.0.1:8000 (8500)
+[2015-09-16 13:47:59 -0700] [8500] [INFO] Using worker: sync
+[2015-09-16 13:47:59 -0700] [8503] [INFO] Booting worker with pid: 8503
+[2015-09-16 13:48:12 -0700] [8500] [INFO] Handling signal: int
+[2015-09-16 13:48:12 -0700] [8503] [INFO] Worker exiting (pid: 8503)
+[2015-09-16 13:48:12 -0700] [8500] [INFO] Shutting down: Master
+[2015-09-16 13:49:25 -0700] [8544] [INFO] Starting gunicorn 19.3.0
+[2015-09-16 13:49:25 -0700] [8544] [INFO] Listening at: http://127.0.0.1:8000 (8544)
+[2015-09-16 13:49:25 -0700] [8544] [INFO] Using worker: sync
+[2015-09-16 13:49:25 -0700] [8547] [INFO] Booting worker with pid: 8547
+[2015-09-16 13:49:38 -0700] [8544] [INFO] Handling signal: int
+[2015-09-16 13:49:38 -0700] [8547] [INFO] Worker exiting (pid: 8547)
+[2015-09-16 13:49:38 -0700] [8544] [INFO] Shutting down: Master

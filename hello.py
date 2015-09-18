@@ -1,28 +1,10 @@
 import os
-from flask import Flask, render_template, request
-from twilio.rest import TwilioRestClient
-import psycopg2
-import urlparse
-
-urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["DATABASE_URL"])
-
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
-
-app = Flask(__name__)
-client = TwilioRestClient(os.environ.get('ACCOUNT_SID'), os.environ.get('AUTH_TOKEN'))
-logger = app.logger
+from app import app, db, client, logger
+from models import Topic, Question, Language, Recording
+from flask import render_template, request
 
 TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER_1')
 URL = os.environ.get('URL')
-LANGUAGES = os.environ.get('LANGUAGES')
-
 
 """
 VIEWS
@@ -30,23 +12,18 @@ VIEWS
 
 @app.route('/')
 def homepage():
-    curr = conn.cursor()
-    topics = curr.execute("SELECT * FROM topics;")
     return render_template(
         'homepage.html',
-        topics=topics,
+        topics=db.session.query(Topic).all(),
         is_current=False
     )
 
 
 @app.route('/choose_question', methods=['GET', 'POST'])
 def choose_question():
-    print "In choose question"
     topic_id = request.args.get('topic_id', '')
     phone_number = request.args.get('number', '')
-    print request.args
     record = ("on" == request.args.get('if_record', ''))
-    print record
     logger.debug(record)
     question = pick_question(topic_id)
     url = "{}/handle_call?question_id={}&action=speak".format(URL, question.id)
@@ -61,7 +38,7 @@ def choose_question():
 
     return render_template(
         'in_call.html',
-        topics=db.session.query(Topic).all(),
+        topics=TOPICS,
         is_current=True,
         call_sid=call.sid,
         question_id=question.id,
@@ -188,9 +165,13 @@ def hangup():
     call = client.calls.update(sid, status="completed")
     return render_template(
         'homepage.html',
-        topics=db.session.query(Topic).all(),
+        topics=TOPICS,
         is_current=False
     )
+
+def order_popular_questions():
+    conn = db.connect()
+    questions = conn.execute("")
 
 def pick_question(topic_id):
     if topic_id == "0":
@@ -294,6 +275,6 @@ def handle_recording():
     )
 
 
-
-
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
