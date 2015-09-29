@@ -1,10 +1,7 @@
 import os
-from app import app, db, client, logger
+from app import app, db, client, logger, URL, TWILIO_NUMBER
 from models import Topic, Question, Language, Recording
 from flask import render_template, request
-
-TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER_1')
-URL = os.environ.get('URL')
 
 """
 VIEWS
