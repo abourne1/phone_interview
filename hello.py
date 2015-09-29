@@ -1,4 +1,5 @@
-import os
+import twilio
+import random
 from app import app, db, client, logger, URL, TWILIO_NUMBER
 from models import Topic, Question, Language, Recording
 from flask import render_template, request
@@ -35,11 +36,11 @@ def choose_question():
 
     return render_template(
         'in_call.html',
-        topics=TOPICS,
+        topics=db.session.query(Topic).all(),
         is_current=True,
         call_sid=call.sid,
         question_id=question.id,
-        languages=LANGUAGES,
+        languages=db.session.query(Language).all(),
         answer=question.answer,
         answer_language=str(question.language)
     )
@@ -200,17 +201,11 @@ NEW QUESTION
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
-    filename = "../interview_workshop/phone_interview/recordings/" + "recording-" + str(db.session.query(Recording).count() + 1) + ".wav"
+    logger.debug("in new")
     return render_template(
         'new.html',
         topics=db.session.query(Topic).all(),
-        filename = filename,
-        languages=[
-            "python",
-            "java",
-            "javascript",
-            "c"
-        ]
+        languages=db.session.query(Language).all()
     )
 
 @app.route('/make', methods=['POST'])
