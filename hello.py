@@ -216,20 +216,19 @@ def make():
     hint=request.form['hint']
     topic_id=request.form['topic_id']
     answer=request.form['answer']
-    language=request.form['language']
+    language_id=request.form['language_id']
     print "in make:"
-    print language
+    print language_id
     new_question = Question(
         text=text,
         hint=hint,
         topic_id=topic_id,
         answer=answer,
-        language=language
+        language_id=language_id
     )
     db.session.add(new_question)
     db.session.commit()
     print new_question.language
-    flash('Question created')
 
     return render_template(
         'homepage.html',

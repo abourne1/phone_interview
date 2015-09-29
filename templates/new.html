@@ -38,10 +38,10 @@
                             </strong>
                         </div>
                         <div>
-                            <select onchange="set_lang();" class="form-control" id="language" name="language" style="width: 100%;">
+                            <select onchange="set_lang();" class="form-control" id="language" name="language_id" style="width: 100%;">
                             <option value="" disabled selected>Select language</option>
                             {% for l in languages %}
-                                <option value={{l}}>
+                                <option value={{l.id}}>
                                     {{ l.name.capitalize() }}
                                 </option>
                             {% endfor %}
