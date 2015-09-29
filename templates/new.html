@@ -24,7 +24,7 @@
                             <option value="" disabled selected>Select topic</option>
                             {% for topic in topics %}
                                 <option value={{topic.id}}>
-                                    {{ topic.name }}
+                                    {{ topic.name.capitalize() }}
                                 </option>
                             {% endfor %}
                             </select>
@@ -42,7 +42,7 @@
                             <option value="" disabled selected>Select language</option>
                             {% for l in languages %}
                                 <option value={{l}}>
-                                    {{ l.capitalize() }}
+                                    {{ l.name.capitalize() }}
                                 </option>
                             {% endfor %}
                             </select>
