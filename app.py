@@ -10,4 +10,5 @@ client = TwilioRestClient(app.config['ACCOUNT_SID'], app.config['AUTH_TOKEN'])
 logger = app.logger
 
 TWILIO_NUMBER = app.config['TWILIO_NUMBER']
-URL = app.config['URL']
+print app.config
+URL = "https://polar-basin-7600.herokuapp.com"
