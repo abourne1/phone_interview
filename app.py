@@ -6,8 +6,8 @@ from twilio.rest import TwilioRestClient
 app = Flask(__name__)
 app.config.from_object('config.Config')
 db = SQLAlchemy(app)
-client = TwilioRestClient(os.environ.get('ACCOUNT_SID'), os.environ.get('AUTH_TOKEN'))
+client = TwilioRestClient(app.config['ACCOUNT_SID'], app.config['AUTH_TOKEN'])
 logger = app.logger
 
-TWILIO_NUMBER = os.environ.get('TWILIO_NUMBER_1')
-URL = os.environ.get('URL')
+TWILIO_NUMBER = app.config['TWILIO_NUMBER']
+URL = app.config['URL']
