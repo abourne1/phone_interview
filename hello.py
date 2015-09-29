@@ -201,7 +201,6 @@ NEW QUESTION
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
-    logger.debug("in new")
     return render_template(
         'new.html',
         topics=db.session.query(Topic).all(),
