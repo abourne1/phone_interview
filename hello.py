@@ -90,7 +90,7 @@ def next_question():
         is_current=True,
         call_sid=sid,
         question_id=question.id,
-        languages=LANGUAGES,
+        languages=db.session.query(Language).all(),
         answer=question.answer,
         answer_language=question.language
     )
@@ -114,7 +114,7 @@ def upvote():
         call_sid=sid,
         question_id=question_id,
         voted=True,
-        languages=LANGUAGES,
+        languages=db.session.query(Language).all(),
         user_input = user_input,
         language = language,
         answer=question.answer,
@@ -133,7 +133,7 @@ def repeat():
         call_sid=sid,
         question_id=question_id,
         voted=voted,
-        languages=LANGUAGES,
+        languages=db.session.query(Language).all(),
         answer=question.answer,
         language = request.args.get('language', ''),
         user_input = user_input,
@@ -152,7 +152,7 @@ def hint():
         call_sid=sid,
         question_id=question_id,
         voted=voted,
-        languages=LANGUAGES,
+        languages=db.session.query(Language).all(),
         answer=question.answer,
         language = request.args.get('language', ''),
         user_input = user_input,
@@ -165,7 +165,7 @@ def hangup():
     call = client.calls.update(sid, status="completed")
     return render_template(
         'homepage.html',
-        topics=TOPICS,
+        topics=db.session.query(Topic).all(),
         is_current=False
     )
 
