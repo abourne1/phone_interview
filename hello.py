@@ -49,7 +49,7 @@ def choose_question():
 def handle_call():
     action = request.args.get('action', '')
     question_id = request.args.get('question_id', '')
-    question = db.session.query(Question).get(question_id)
+    question = db.ses1sion.query(Question).get(question_id)
     resp = twilio.twiml.Response()
 
     if action == "repeat":
@@ -221,6 +221,7 @@ def make():
     print language_id
     new_question = Question(
         text=text,
+        user_id=1,
         hint=hint,
         topic_id=topic_id,
         answer=answer,
@@ -228,7 +229,7 @@ def make():
     )
     db.session.add(new_question)
     db.session.commit()
-    print new_question.language
+    print new_question.language_id
 
     return render_template(
         'homepage.html',
