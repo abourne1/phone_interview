@@ -25,6 +25,7 @@ def choose_question():
     logger.debug(record)
     question = pick_question(topic_id)
     url = "{}/handle_call?question_id={}&action=speak".format(URL, question.id)
+    print 1
     print record
     print request.args.get('if_record', '')
     call = client.calls.create(
@@ -49,9 +50,10 @@ def choose_question():
 
 @app.route('/handle_call', methods=['GET', 'POST'])
 def handle_call():
+    print "in handle call"
     action = request.args.get('action', '')
     question_id = request.args.get('question_id', '')
-    question = db.ses1sion.query(Question).get(question_id)
+    question = db.session.query(Question).get(question_id)
     resp = twilio.twiml.Response()
 
     if action == "repeat":
@@ -262,6 +264,7 @@ def handle_recording():
     )
     db.session.add(new_recording)
     db.session.commit()
+
     return render_template(
         'homepage.html',
         topics=db.session.query(Topic).all(),
