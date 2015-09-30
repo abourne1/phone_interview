@@ -53,8 +53,11 @@ def handle_call():
     print "in handle call"
     action = request.args.get('action', '')
     question_id = request.args.get('question_id', '')
+    print question_id
     question = db.session.query(Question).get(question_id)
+    print 2
     resp = twilio.twiml.Response()
+    print 3
 
     if action == "repeat":
         resp.say(question.text)
