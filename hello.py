@@ -25,6 +25,8 @@ def choose_question():
     logger.debug(record)
     question = pick_question(topic_id)
     url = "{}/handle_call?question_id={}&action=speak".format(URL, question.id)
+    print record
+    print request.args.get('if_record', '')
     call = client.calls.create(
         to=phone_number,
         from_=TWILIO_NUMBER,
@@ -42,7 +44,7 @@ def choose_question():
         question_id=question.id,
         languages=db.session.query(Language).all(),
         answer=question.answer,
-        answer_language=str(question.language)
+        answer_language=str(question.language())
     )
 
 @app.route('/handle_call', methods=['GET', 'POST'])
@@ -249,7 +251,7 @@ def recordings():
     )
 
 
-@app.route('/handle_recording', methods=["GET","POST"])
+@app.route('/handle_recording', methods=["GET", "POST"])
 def handle_recording():
     print "HERE!"
     print request.form

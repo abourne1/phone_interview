@@ -59,6 +59,11 @@ class Question(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
+    def language(self):
+        l = db.session.query(Language).get(self.language_id)
+        print l.name
+        return l.name
+
 class Topic(db.Model):
     __tablename__ = 'topics'
 

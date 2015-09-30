@@ -12,7 +12,7 @@
                     <option value="" disabled selected>Select a topic</option>
                     <option value=0>Any</option>
                     {% for topic in topics %}
-                        <option value={{topic.id}}>{{ topic.name }}</option>
+                        <option value={{topic.id}}>{{ topic.name.capitalize() }}</option>
                     {% endfor %}
             </select>
             <div style="display:inline;">
