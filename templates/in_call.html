@@ -30,11 +30,11 @@
 
                             {% for l in languages %}
                                 {% if l != language %}
-                                    <option>
+                                    <option value="{{language.lower()}}">
                                         {{ l.name.capitalize() }}
                                     </option>
                                 {% else %}
-                                    <option value="{{language}}" selected>{{language}}</option>
+                                    <option value="{{language.lower()}}" selected>{{language}}</option>
                                 {% endif %}
                             {% endfor %}
 
