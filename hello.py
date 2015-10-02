@@ -1,4 +1,4 @@
-import twilio
+import twilio.twiml
 import random
 from app import app, db, client, logger, URL, TWILIO_NUMBER
 from models import Topic, Question, Language, Recording
@@ -60,6 +60,7 @@ def handle_call():
     print 3
 
     if action == "repeat":
+        print question.text
         resp.say(question.text)
     elif action == "hint":
         resp.say(question.hint)
@@ -174,20 +175,21 @@ def hangup():
         is_current=False
     )
 
-def order_popular_questions():
-    conn = db.connect()
-    questions = conn.execute("")
-
 def pick_question(topic_id):
+    print topic_id
     if topic_id == "0":
-        matches = db.session.query(Question).order_by(Question.popularity.desc())
-        index = int(random.random()**2 * matches.count() )
+        matches = db.session.query(Question).filter(
+            Question.topic_id != None
+        ).order_by(Question.popularity.desc())
+        print matches.count()
+        index = int(random.random()**2 * matches.count())
         question = matches.all()[index]
     else:
         matches = db.session.query(Question).filter(
             Question.topic_id == topic_id
         ).order_by(Question.popularity.desc())
-        index = int(random.random()**2 * matches.count() )
+        print matches.count()
+        index = int(random.random()**2 * matches.count())
         question = matches.all()[index]
     return question
 
@@ -199,7 +201,7 @@ def get_params():
     return sid, question_id, voted, user_input
 
 def update_call(sid, question_id, action=""):
-    url = "http://employed.herokuapp.com/handle_call?question_id={}&action={}".format(question_id, action)
+    url = URL + "/handle_call?question_id={}&action={}".format(question_id, action)
     call = client.calls.update(sid, url=url, method="POST")
 
 """

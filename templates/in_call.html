@@ -16,10 +16,10 @@
                         <form style="display:inline;" class="in-call form-inline" action="/next-question">
                             <input type="hidden" name="call_sid" value={{call_sid}}>
                             <select id="next-call-select" name="topic_id" class="btn btn-default form-control">
-                                <option value="" disabled selected>Next Question Topic</option>
+                                <option value=0 selected>Next Question Topic</option>
                                 <option value=0>Any</option>
                                 {% for topic in topics %}
-                                    <option value={{topic.id}}>{{ topic.name }}</option>
+                                    <option value={{topic.id}}>{{ topic.name.capitalize() }}</option>
                                 {% endfor %}
                             </select>
                             <input id="next-call-btn" class="btn in-call-btn btn-primary form-control" type="submit" value="Go To Next Question">
@@ -27,9 +27,6 @@
                     </div>
                     <div class="in-call">
                         <select onchange="set_lang();" class="form-control" id="language" style="width: 40%; margin: 0 0 5% 30%;">
-                            {% if not language %}
-                                <option value="" disabled selected>Choose language</option>
-                            {% endif %}
                             {% for l in languages %}
                                 {% if l != language %}
                                     <option>
@@ -43,7 +40,7 @@
                     </div>
 
                     <div class="in-call">
-                        <form style="display:inline;"class="in-call form-inline" action="/repeat">
+                        <form style="display:inline;" class="in-call form-inline" action="/repeat">
                             <input type="hidden" name="call_sid" value={{call_sid}}>
                             <input type="hidden" name="question_id" value={{question_id}}>
                             <input type="hidden" name="voted" value={{voted}}>
@@ -126,7 +123,7 @@
 
         var get_language = function() {
             var select = document.getElementById("language");
-            var lang = select.options[select.selectedIndex].text;
+            var lang = select.options[select.selectedIndex].value;
             return lang;
         }
 
@@ -150,8 +147,7 @@
             $("#" + id + "-input").val(get_input());
             $("#" + id + "-language").val(get_language());
         }
-
-        window.onload = set_lang()
+ƒ
         window.onresize = editor.resize();
     </script>
 {% endblock %}
