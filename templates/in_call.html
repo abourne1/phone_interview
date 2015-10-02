@@ -2,7 +2,6 @@
 
 {% block content %}
 
-    <p onload="set_lang({{language}});"></p>
 
     <div class="jumbotron" style="margin-bottom: 2%;">
         <h1 class="text-center">Control Phone Call</h1>
@@ -14,6 +13,7 @@
                 <div class="padding-5" style="float: left; width: 34%; height: 100%; margin: 5% 0 0 3%">
                     <div class="in-call">
                         <form style="display:inline;" class="in-call form-inline" action="/next-question">
+                            <input id="next-language" type="hidden" name="language" value="">
                             <input type="hidden" name="call_sid" value={{call_sid}}>
                             <select id="next-call-select" name="topic_id" class="btn btn-default form-control">
                                 <option value=0 selected>Next Question Topic</option>
@@ -22,19 +22,22 @@
                                     <option value={{topic.id}}>{{ topic.name.capitalize() }}</option>
                                 {% endfor %}
                             </select>
-                            <input id="next-call-btn" class="btn in-call-btn btn-primary form-control" type="submit" value="Go To Next Question">
+                            <input onclick="set_next_language('next-language');" id="next-call-btn" class="btn in-call-btn btn-primary form-control" type="submit" value="Go To Next Question">
                         </form>
                     </div>
                     <div class="in-call">
                         <select onchange="set_lang();" class="form-control" id="language" style="width: 40%; margin: 0 0 5% 30%;">
 
                             {% for l in languages %}
-                                {% if l != language %}
-                                    <option value="{{language.lower()}}">
+
+                                {% if l.name.lower() == language.lower() %}
+                                    <option value="{{l.name.lower()}}" selected>
                                         {{ l.name.capitalize() }}
                                     </option>
                                 {% else %}
-                                    <option value="{{language.lower()}}" selected>{{language}}</option>
+                                    <option value="{{l.name.lower()}}">
+                                        {{ l.name.capitalize() }}
+                                    </option>
                                 {% endif %}
                             {% endfor %}
 
@@ -84,7 +87,7 @@
                     </div>
 
                     <div class="in-call" style="margin-top:2%;">
-                        <form class="in-call-btn form-inline" action="\hangup">
+                        <form class="in-call-btn form-inline" action="/hangup">
                             <input type="hidden" name="call_sid" value={{call_sid}}>
                             <input type="submit" id="in-call-btn" class="btn in-call-btn btn-default form-control" value="Hangup">
                         </form>
@@ -150,7 +153,11 @@
             $("#" + id + "-language").val(get_language());
         }
 
-        window.onload = set_lang()
+        var set_next_language = function(id) {
+            $("#" + id).val(get_language());
+        }
+
+        window.onload = set_lang();
         window.onresize = editor.resize();
     </script>
 {% endblock %}

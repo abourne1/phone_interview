@@ -133,6 +133,8 @@ def upvote():
 
 @app.route('/repeat', methods=['GET', 'POST'])
 def repeat():
+    print "repeat"
+    print request.args
     sid, question_id, voted, user_input = get_params()
     question = db.session.query(Question).get(question_id)
     update_call(sid, question_id, "repeat")
@@ -152,6 +154,8 @@ def repeat():
 
 @app.route('/hint', methods=['GET', 'POST'])
 def hint():
+    print "hint"
+    print request.args
     sid, question_id, voted, user_input = get_params()
     question = db.session.query(Question).get(question_id)
     update_call(sid, question_id, "hint")
