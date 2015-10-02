@@ -27,15 +27,17 @@
                     </div>
                     <div class="in-call">
                         <select onchange="set_lang();" class="form-control" id="language" style="width: 40%; margin: 0 0 5% 30%;">
+
                             {% for l in languages %}
                                 {% if l != language %}
                                     <option>
                                         {{ l.name.capitalize() }}
                                     </option>
                                 {% else %}
-                                    <option id="{{language}}" value="{{language}}" selected>{{language}}</option>
+                                    <option value="{{language}}" selected>{{language}}</option>
                                 {% endif %}
                             {% endfor %}
+
                         </select>
                     </div>
 
@@ -147,7 +149,8 @@
             $("#" + id + "-input").val(get_input());
             $("#" + id + "-language").val(get_language());
         }
-ƒ
+
+        window.onload = set_lang()
         window.onresize = editor.resize();
     </script>
 {% endblock %}

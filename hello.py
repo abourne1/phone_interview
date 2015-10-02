@@ -45,7 +45,8 @@ def choose_question():
         question_id=question.id,
         languages=db.session.query(Language).all(),
         answer=question.answer,
-        answer_language=str(question.language())
+        answer_language=str(question.language()),
+        language="python"
     )
 
 @app.route('/handle_call', methods=['GET', 'POST'])
@@ -81,13 +82,15 @@ IN CALL
 @app.route('/in_call', methods=["GET"])
 def in_call():
     return render_template(
-        'in_call.html'
+        'in_call.html',
+        language="python"
     )
 
 @app.route('/next-question', methods=['GET', 'POST'])
 def next_question():
     sid = request.args.get('call_sid', '')
     topic_id = request.args.get('topic_id', '')
+    language = request.args.get('language', '')
     question = pick_question(topic_id)
     update_call(sid, question.id)
     return render_template(
@@ -98,7 +101,8 @@ def next_question():
         question_id=question.id,
         languages=db.session.query(Language).all(),
         answer=question.answer,
-        answer_language=question.language
+        answer_language=question.language,
+        language=language
     )
 
 @app.route('/upvote', methods=['GET', 'POST'])
@@ -121,8 +125,8 @@ def upvote():
         question_id=question_id,
         voted=True,
         languages=db.session.query(Language).all(),
-        user_input = user_input,
-        language = language,
+        user_input=user_input,
+        language=language,
         answer=question.answer,
         answer_language=question.language
     )
@@ -141,8 +145,8 @@ def repeat():
         voted=voted,
         languages=db.session.query(Language).all(),
         answer=question.answer,
-        language = request.args.get('language', ''),
-        user_input = user_input,
+        language=request.args.get('language', ''),
+        user_input=user_input,
         answer_language=question.language
     )
 
@@ -160,8 +164,8 @@ def hint():
         voted=voted,
         languages=db.session.query(Language).all(),
         answer=question.answer,
-        language = request.args.get('language', ''),
-        user_input = user_input,
+        language=request.args.get('language', ''),
+        user_input=user_input,
         answer_language=question.language
     )
 
