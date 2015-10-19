@@ -10,6 +10,7 @@ VIEWS
 
 @app.route('/')
 def homepage():
+    print 1
     return render_template(
         'homepage.html',
         topics=db.session.query(Topic).all(),
