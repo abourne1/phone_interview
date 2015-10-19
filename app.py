@@ -10,4 +10,4 @@ client = TwilioRestClient(os.environ['ACCOUNT_SID'], os.environ['AUTH_TOKEN'])
 logger = app.logger
 
 TWILIO_NUMBER = os.environ['TWILIO_NUMBER']
-URL = "https://polar-basin-7600.herokuapp.com"
+URL = "http://polar-basin-7600.herokuapp.com"
