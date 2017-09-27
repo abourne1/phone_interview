@@ -10,7 +10,6 @@ VIEWS
 
 @app.route('/')
 def homepage():
-    print 1
     return render_template(
         'homepage.html',
         topics=db.session.query(Topic).all(),
@@ -26,9 +25,6 @@ def choose_question():
     logger.debug(record)
     question = pick_question(topic_id)
     url = "{}/handle_call?question_id={}&action=speak".format(URL, question.id)
-    print 1
-    print record
-    print request.args.get('if_record', '')
     call = client.calls.create(
         to=phone_number,
         from_=TWILIO_NUMBER,
@@ -52,14 +48,10 @@ def choose_question():
 
 @app.route('/handle_call', methods=['GET', 'POST'])
 def handle_call():
-    print "in handle call"
     action = request.args.get('action', '')
     question_id = request.args.get('question_id', '')
-    print question_id
     question = db.session.query(Question).get(question_id)
-    print 2
     resp = twilio.twiml.Response()
-    print 3
 
     if action == "repeat":
         print question.text
@@ -134,8 +126,6 @@ def upvote():
 
 @app.route('/repeat', methods=['GET', 'POST'])
 def repeat():
-    print "repeat"
-    print request.args
     sid, question_id, voted, user_input = get_params()
     question = db.session.query(Question).get(question_id)
     update_call(sid, question_id, "repeat")
@@ -155,8 +145,6 @@ def repeat():
 
 @app.route('/hint', methods=['GET', 'POST'])
 def hint():
-    print "hint"
-    print request.args
     sid, question_id, voted, user_input = get_params()
     question = db.session.query(Question).get(question_id)
     update_call(sid, question_id, "hint")
@@ -185,7 +173,6 @@ def hangup():
     )
 
 def pick_question(topic_id):
-    print topic_id
     if topic_id == "0":
         matches = db.session.query(Question).filter(
             Question.topic_id != None
@@ -197,7 +184,6 @@ def pick_question(topic_id):
         matches = db.session.query(Question).filter(
             Question.topic_id == topic_id
         ).order_by(Question.popularity.desc())
-        print matches.count()
         index = int(random.random()**2 * matches.count())
         question = matches.all()[index]
     return question
@@ -219,7 +205,6 @@ NEW QUESTION
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
-    print "in new"
     return render_template(
         'new.html',
         topics=db.session.query(Topic).all(),
@@ -229,14 +214,11 @@ def new():
 @app.route('/make', methods=['POST'])
 def make():
     # add validations, probably through a form class
-    print request.form
     text=request.form['question']
     hint=request.form['hint']
     topic_id=request.form['topic_id']
     answer=request.form['answer']
     language_id=request.form['language_id']
-    print "in make:"
-    print language_id
     new_question = Question(
         text=text,
         user_id=1,
@@ -247,7 +229,6 @@ def make():
     )
     db.session.add(new_question)
     db.session.commit()
-    print new_question.language_id
 
     return render_template(
         'homepage.html',
@@ -259,18 +240,19 @@ def make():
 RECORDINGS
 """
 
-@app.route('/recordings', methods=["GET","POST"])
-def recordings():
-    return render_template(
-        'recordings.html',
-        recordings=db.session.query(Recording).order_by(Recording.timestamp.desc()).all()
-    )
+#
+# TODO: Support recordings properly
+# 
+# @app.route('/recordings', methods=["GET","POST"])
+# def recordings():
+#     return render_template(
+#         'recordings.html',
+#         recordings=db.session.query(Recording).order_by(Recording.timestamp.desc()).all()
+#     )
 
 
 @app.route('/handle_recording', methods=["GET", "POST"])
 def handle_recording():
-    print "HERE!"
-    print request.form
     new_recording = Recording(
         url=request.form['RecordingUrl'],
         call_sid=request.form['CallSid'],
